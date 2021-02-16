@@ -6,7 +6,7 @@ import java.util.List;
 
 class BST {
     // Node class used to build the Binary Search Tree
-    class Node {
+    public static class Node {
         // int data type
         int value;
         Node left, right, parent;
@@ -98,8 +98,7 @@ class BST {
         // Go right
         else if (value > root.value) {
             root.right = delete(root.right, value);
-        }
-        else {
+        } else {
             // No children case
             if (root.right == null && root.left == null) {
                 root = null;
@@ -142,49 +141,38 @@ class BST {
         }
     }
 
-	// Function to print in order using morris traversal
-	// Space complexity: O(1)
-	public void morrisTraversal(Node root) {
-		Node tourist = root;
-		Node guide = null;
+    // Function to print in order using morris traversal
+    // Space complexity: O(1)
+    public void morrisTraversal(Node root) {
+        if (root == null) {
+            return;
+        }
 
-		System.out.println("before first while loop");
-		
-		while(tourist != null) {
+        Node tourist = root;
+        Node guide;
 
-			System.out.println("in first while loop");
+        while (tourist != null) {
+            if (tourist.left == null) {
+                System.out.print(tourist.value + " ");
+                tourist = tourist.right;
+            } else {
+                guide = tourist.left;
 
-			guide = tourist.left;
+                while (guide.right != null && guide.right != tourist) {
+                    guide = guide.right;
+                }
 
-			if(guide.right != null){
-
-				System.out.println("In if statement inside loop");
-
-				while(guide.right != null && guide.right != tourist) {
-				
-					System.out.println("in second while loop");
-
-					guide = guide.right;
-
-					if(guide.right == null) {
-						guide.right = tourist;
-						System.out.println("Stuck in if");
-						tourist = tourist.left;
-						break;
-					}
-					else if(guide.right == tourist){
-						System.out.print(tourist.value + " ");
-						tourist = tourist.right;
-						guide.right = null;
-					}			
-				}
-			} else {
-				System.out.println("in else");
-				System.out.print(tourist.value + " ");
-				tourist = tourist.right;
-			}
-		}
-	}
+                if (guide.right == null) {
+                    guide.right = tourist;
+                    tourist = tourist.left;
+                } else {
+                    System.out.print(tourist.value + " ");
+                    tourist = tourist.right;
+                    guide.right = null;
+                }
+            }
+        }
+    }
 
     // Returns the next in order successor
     public Node ios(Node root, int value) {
@@ -241,7 +229,7 @@ class BST {
             return 0;
         }
         // Count children recursively for left side and right side
-        else{
+        else {
             return 1 + countChildren(root.left) + countChildren(root.right);
         }
     }
@@ -267,6 +255,8 @@ class BST {
     // main method
     public static void main(String[] args) {
 
+        String file = "test-files/in10.txt";
+
         // Create a Binary Search Tree
         BST tree = new BST();
 
@@ -277,7 +267,7 @@ class BST {
         BufferedReader br = null;
         try {
             // Get command from the user at command line
-            br = new BufferedReader(new FileReader(args[0]));
+            br = new BufferedReader(new FileReader(file));
             String text = br.readLine();
             // Loop until BufferedReader reaches null
             while (text != null) {
@@ -297,7 +287,7 @@ class BST {
             }
         }
 
-        System.out.println(args[0] + " contains:");
+        System.out.println(file + " contains:");
         for (String string : entries) {
             System.out.println(string);
         }
@@ -321,12 +311,11 @@ class BST {
 
                 if (tempNode == null) {
                     System.out.println(intValue + ": NOT found - NOT deleted");
-                }
-                else {
+                } else {
                     tree.root = tree.delete(tree.root, intValue);
                 }
             }
-            // For searchs, split command, parse data, and verify if found the value
+            // For searches, split command, parse data, and verify if found the value
             else if (temp.charAt(0) == 's') {
                 tempArr = temp.split(" ", 2);
                 intValue = Integer.parseInt(tempArr[1]);
@@ -334,16 +323,15 @@ class BST {
 
                 if (tempNode == null) {
                     System.out.println(intValue + ": NOT found");
-                }
-                else {
+                } else {
                     System.out.println(intValue + ": found");
                 }
             }
             // Print the tree
             else if (temp.charAt(0) == 'p') {
                 //tree.print(tree.root);
-				System.out.println("Morris Traversal: ");
-				tree.morrisTraversal(tree.root);
+                System.out.println("Morris Traversal: ");
+                tree.morrisTraversal(tree.root);
                 System.out.println();
             }
             // Exit the program
